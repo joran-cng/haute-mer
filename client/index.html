@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0f14">
+  <title>Haute Mer — bataille navale</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23e8a33d' stroke-width='3'/%3E%3Cpath d='M16 2v28M2 16h28' stroke='%23e8a33d' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="stage"></div>
+  <div class="scrim" id="scrim"></div>
+
+  <main id="ui">
+    <!-- Accueil -->
+    <section class="screen" id="screen-login" hidden>
+      <div class="login">
+        <p class="eyebrow">Combat naval · temps réel · deux joueurs</p>
+        <h1>Haute Mer</h1>
+        <p class="lede">Cinq navires, une grille, un adversaire de l'autre côté de l'horizon. Coulez sa flotte avant qu'il ne trouve la vôtre.</p>
+        <form id="login-form" autocomplete="off">
+          <label for="callsign">Indicatif du commandant</label>
+          <div class="field-row">
+            <input id="callsign" maxlength="20" minlength="2" required pattern="[\p{L}\p{N} _\-]{2,20}" placeholder="Amiral_Nemo" spellcheck="false">
+            <button class="btn primary" type="submit">Prendre la mer</button>
+          </div>
+          <p class="form-error" id="login-error" role="alert"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- Salon -->
+    <section class="screen" id="screen-lobby" hidden>
+      <div class="lobby">
+        <div class="lobby-main panel">
+          <header class="panel-head"><span>Salle des opérations</span><span class="lobby-who"><span class="muted" id="lobby-user"></span><button type="button" class="link-btn" id="btn-logout">Changer</button></span></header>
+          <button class="action-card" id="btn-queue">
+            <span class="action-title">Chercher un adversaire</span>
+            <span class="action-sub" id="queue-sub">Appariement automatique avec le prochain commandant disponible</span>
+          </button>
+          <button class="action-card" id="btn-room">
+            <span class="action-title">Créer un salon privé</span>
+            <span class="action-sub" id="room-sub">Obtenez un code à transmettre à votre adversaire</span>
+          </button>
+          <form class="join" id="join-form">
+            <label for="join-code">Rejoindre avec un code</label>
+            <div class="field-row">
+              <input id="join-code" maxlength="6" placeholder="K7TQ2M" spellcheck="false" autocomplete="off">
+              <button class="btn" type="submit">Rejoindre</button>
+            </div>
+          </form>
+        </div>
+        <aside class="panel presence">
+          <header class="panel-head"><span>À portée radio</span><span class="count" id="presence-count">0</span></header>
+          <ul id="presence-list"></ul>
+          <p class="hint">Fermeture d'onglet : moins d'1 s. Perte de liaison : 15 s au plus. Panne d'un serveur : 20 s au plus.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Placement -->
+    <section class="screen" id="screen-placement" hidden>
+      <aside class="panel dock">
+        <header class="panel-head"><span>Déploiement</span><span class="timer" id="placement-timer">--</span></header>
+        <p class="hint">Choisissez un navire, cliquez sur la grille. <kbd>R</kbd> pour pivoter.</p>
+        <ol id="dock-list"></ol>
+        <div class="dock-actions">
+          <button class="btn" id="btn-rotate">Pivoter</button>
+          <button class="btn" id="btn-random">Aléatoire</button>
+        </div>
+        <button class="btn primary wide" id="btn-ready" disabled>Parés au combat</button>
+        <p class="status-line" id="placement-status"></p>
+      </aside>
+    </section>
+
+    <!-- Combat -->
+    <section class="screen" id="screen-battle" hidden>
+      <header class="turnbar" id="turnbar">
+        <span class="turn-name left" id="me-name"></span>
+        <div class="turn-core">
+          <span class="turn-label" id="turn-label">—</span>
+          <span class="turn-time" id="turn-time">--</span>
+          <div class="turn-progress"><i id="turn-progress"></i></div>
+        </div>
+        <span class="turn-name right" id="foe-name"></span>
+      </header>
+      <aside class="panel status-panel left-panel">
+        <header class="panel-head"><span>Notre flotte</span><span class="muted" id="own-remaining"></span></header>
+        <ul class="fleet-status" id="own-status"></ul>
+        <header class="panel-head sub"><span>Flotte ennemie</span><span class="muted" id="foe-remaining"></span></header>
+        <ul class="fleet-status" id="foe-status"></ul>
+      </aside>
+      <aside class="panel log-panel">
+        <header class="panel-head"><span>Journal de bord</span><button class="link" id="btn-forfeit">Abandonner</button></header>
+        <ol id="log" aria-live="polite"></ol>
+        <form id="chat-form">
+          <input id="chat-input" maxlength="200" placeholder="Message à l'adversaire" autocomplete="off" aria-label="Message à l'adversaire">
+        </form>
+      </aside>
+      <div class="viewtabs" role="tablist">
+        <button id="tab-own" role="tab">Nos eaux</button>
+        <button id="tab-enemy" role="tab">Eaux ennemies</button>
+      </div>
+      <div class="impact-toast" id="toast"></div>
+    </section>
+
+    <!-- Fin -->
+    <section class="screen" id="screen-end" hidden>
+      <div class="end panel">
+        <p class="eyebrow" id="end-eyebrow"></p>
+        <h2 id="end-title"></h2>
+        <p id="end-reason" class="lede"></p>
+        <dl class="stats" id="end-stats"></dl>
+        <div class="end-actions">
+          <button class="btn primary" id="btn-rematch">Revanche</button>
+          <button class="btn" id="btn-lobby">Retour au salon</button>
+        </div>
+        <p class="status-line" id="end-status"></p>
+      </div>
+    </section>
+  </main>
+
+  <div class="link-banner" id="link-banner" hidden role="status"></div>
+  <footer class="statusbar">
+    <span><i class="dot off" id="link-dot"></i><span id="link-text">Hors ligne</span></span>
+    <span id="instance-text"></span>
+    <span id="rtt-text"></span>
+    <button class="link" id="btn-mute">Son activé</button>
+  </footer>
+  <div class="invite" id="invite" hidden>
+    <p id="invite-text"></p>
+    <div class="end-actions">
+      <button class="btn primary" id="invite-accept">Accepter</button>
+      <button class="btn" id="invite-decline">Décliner</button>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
