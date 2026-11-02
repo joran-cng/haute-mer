@@ -1,0 +1,104 @@
+name: bataille-navale
+
+x-game: &game
+  build:
+    context: .
+    dockerfile: server/Dockerfile
+  restart: unless-stopped
+  depends_on:
+    redis:
+      condition: service_healthy
+  stop_grace_period: 5s
+
+x-game-env: &game-env
+  REDIS_URL: redis://redis:6379
+  JWT_SECRET: ${JWT_SECRET:-change-me-in-env-file-0123456789abcdef}
+  ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8088,https://localhost:8443,http://127.0.0.1:8088}
+  TURN_MS: ${TURN_MS:-45000}
+  PLACEMENT_MS: ${PLACEMENT_MS:-120000}
+  PRESENCE_BATCH_MS: ${PRESENCE_BATCH_MS:-500}
+  RATE_LIMIT_PER_SECOND: ${RATE_LIMIT_PER_SECOND:-20}
+  RATE_LIMIT_BURST: ${RATE_LIMIT_BURST:-40}
+
+services:
+  lb:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8088}:8080"
+      - "${HTTPS_PORT:-8443}:8443"
+    depends_on:
+      game-1:
+        condition: service_healthy
+      game-2:
+        condition: service_healthy
+
+  game-1:
+    <<: *game
+    environment:
+      <<: *game-env
+      INSTANCE_ID: game-1
+
+  game-2:
+    <<: *game
+    environment:
+      <<: *game-env
+      INSTANCE_ID: game-2
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=2d
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:11.3.1
+    restart: unless-stopped
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/bataille-navale.json
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+  # Lancé uniquement à la demande : docker compose --profile load run --rm k6 run /load/scenario.js
+  k6:
+    image: grafana/k6:0.54.0
+    profiles: ["load"]
+    volumes:
+      - ./load:/load
+    environment:
+      BASE_URL: http://lb:8080
+      WS_URL: ws://lb:8080/ws
+      ORIGIN: http://localhost:8088
+    depends_on:
+      - lb
+
+volumes:
+  redis-data:
