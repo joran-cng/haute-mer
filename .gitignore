@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.log
+.vite/
+tests/e2e/artifacts/
+docs/dossier/dossier-technique.html
