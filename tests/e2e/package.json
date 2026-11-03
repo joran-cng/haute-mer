@@ -1,0 +1,12 @@
+{
+  "name": "bataille-navale-e2e",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright-core": "^1.48.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "marked": "^15.0.12"
+  }
+}
