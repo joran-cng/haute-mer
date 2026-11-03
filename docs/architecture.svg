@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 640" font-family="Segoe UI, Arial, sans-serif" font-size="14">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#33424d"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b5651d"/></marker>
+    <marker id="c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7a8791"/></marker>
+  </defs>
+  <rect width="1040" height="640" fill="#fff"/>
+  <style>
+    .box{fill:#f3f6f8;stroke:#33424d;stroke-width:1.4}
+    .accent{fill:#fff4e3;stroke:#b5651d;stroke-width:1.4}
+    .t{font-weight:600;fill:#17222a;text-anchor:middle}
+    .s{fill:#4c5a64;font-size:12.5px;text-anchor:middle}
+    .l{fill:#17222a;font-size:12.5px;font-weight:600}
+    .o{fill:#8a4a12;font-size:12.5px;font-weight:600}
+    .g{fill:#5a6771;font-size:12.5px;font-weight:600}
+  </style>
+
+  <!-- Navigateurs -->
+  <rect class="box" x="30" y="60" width="170" height="74" rx="4"/>
+  <text class="t" x="115" y="90">Navigateur joueur A</text><text class="s" x="115" y="112">Three.js + client WebSocket</text>
+  <rect class="box" x="30" y="300" width="170" height="74" rx="4"/>
+  <text class="t" x="115" y="330">Navigateur joueur B</text><text class="s" x="115" y="352">Three.js + client WebSocket</text>
+
+  <!-- nginx -->
+  <rect class="box" x="350" y="130" width="150" height="170" rx="4"/>
+  <text class="t" x="425" y="175">nginx</text><text class="s" x="425" y="197">répartiteur least_conn</text>
+  <text class="s" x="425" y="217">TLS, statique</text><text class="s" x="425" y="237">limite /api</text>
+
+  <!-- Flux navigateur → nginx -->
+  <path d="M200 90 L350 170" stroke="#33424d" stroke-width="1.8" fill="none" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text class="l" x="222" y="104">WebSocket (WS / WSS)</text><text class="l" x="222" y="120">+ HTTP POST /api/auth/guest</text>
+  <path d="M200 337 L350 262" stroke="#33424d" stroke-width="1.8" fill="none" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text class="l" x="222" y="340">WebSocket (WS / WSS)</text><text class="l" x="222" y="356">+ HTTP POST /api/auth/guest</text>
+
+  <!-- Instances -->
+  <rect class="accent" x="630" y="60" width="170" height="92" rx="4"/>
+  <text class="t" x="715" y="92">game-1</text><text class="s" x="715" y="114">Node.js, ws, règles,</text><text class="s" x="715" y="132">présence, /metrics</text>
+  <rect class="accent" x="630" y="270" width="170" height="92" rx="4"/>
+  <text class="t" x="715" y="302">game-2</text><text class="s" x="715" y="324">Node.js, ws, règles,</text><text class="s" x="715" y="342">présence, /metrics</text>
+  <path d="M500 180 L630 112" stroke="#33424d" stroke-width="1.8" fill="none" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text class="l" x="516" y="128">WebSocket</text><text class="l" x="516" y="144">+ HTTP</text>
+  <path d="M500 250 L630 316" stroke="#33424d" stroke-width="1.8" fill="none" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text class="l" x="516" y="296">WebSocket</text><text class="l" x="516" y="312">+ HTTP</text>
+
+  <!-- Redis -->
+  <rect class="accent" x="870" y="150" width="140" height="130" rx="4"/>
+  <text class="t" x="940" y="182">Redis 7</text><text class="s" x="940" y="204">Pub/Sub : direct</text><text class="s" x="940" y="224">Streams : journal</text><text class="s" x="940" y="244">Hash, ZSet : état,</text><text class="s" x="940" y="262">présence, échéances</text>
+  <path d="M800 118 L870 180" stroke="#b5651d" stroke-width="1.8" fill="none" marker-start="url(#b)" marker-end="url(#b)"/>
+  <path d="M800 310 L870 252" stroke="#b5651d" stroke-width="1.8" fill="none" marker-start="url(#b)" marker-end="url(#b)"/>
+  <text class="o" x="792" y="212">Redis Pub/Sub (RESP)</text>
+  <text class="o" x="792" y="230">+ XADD / XRANGE</text>
+
+  <!-- Observabilité -->
+  <rect class="box" x="520" y="480" width="170" height="64" rx="4"/>
+  <text class="t" x="605" y="508">Prometheus</text><text class="s" x="605" y="528">relevé toutes les 5 s</text>
+  <rect class="box" x="780" y="480" width="170" height="64" rx="4"/>
+  <text class="t" x="865" y="508">Grafana</text><text class="s" x="865" y="528">tableau de bord</text>
+  <path d="M520 512 L300 512" stroke="none"/>
+  <path d="M690 512 L780 512" stroke="#7a8791" stroke-width="1.6" fill="none" marker-start="url(#c)"/>
+  <text class="g" x="696" y="500">HTTP PromQL</text>
+  <path d="M630 480 L690 362" stroke="#7a8791" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#c)"/>
+  <path d="M590 480 C550 420 590 200 640 152" stroke="#7a8791" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#c)"/>
+  <text class="g" x="430" y="430">HTTP GET /metrics (pull)</text>
+
+  <!-- k6 -->
+  <rect class="box" x="30" y="480" width="170" height="64" rx="4"/>
+  <text class="t" x="115" y="508">k6 (profil load)</text><text class="s" x="115" y="528">joueurs simulés</text>
+  <path d="M200 500 L370 300" stroke="#7a8791" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#c)"/>
+  <text class="g" x="212" y="462">WebSocket + HTTP</text>
+
+  <text x="30" y="30" font-size="17" font-weight="600" fill="#17222a">Haute Mer : composants et flux, chaque flux porte le nom de sa technique</text>
+  <text x="30" y="600" font-size="13" fill="#4c5a64">Trait plein : flux de production. Pointillés : mesure et observabilité. Chaque instance s'abonne aux canaux Redis des parties de ses clients ;</text>
+  <text x="30" y="620" font-size="13" fill="#4c5a64">tout tir passe par Redis, ce qui fait se rejoindre deux joueurs connectés à deux instances différentes, sans session collante.</text>
+</svg>
