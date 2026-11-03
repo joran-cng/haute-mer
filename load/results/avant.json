@@ -1,0 +1,93 @@
+{
+  "label": "avant",
+  "presenceBatchMs": 0,
+  "date": "2026-11-04T09:13:01.898Z",
+  "rampS": 20,
+  "holdS": 40,
+  "tiers": [
+    {
+      "connections": 100,
+      "connectionsObserved": 102,
+      "p50Ms": 3,
+      "p95Ms": 4,
+      "p99Ms": 8,
+      "shotsPerSecond": 49.82857142857143,
+      "wsMessagesPerSecond": 420.7587813712881,
+      "outMessagesPerSecond": 352.1921311394903,
+      "outBytesPerSecond": 84385.19930528093,
+      "cpuCoresTotal": 0.12733921446828766,
+      "eventLoopP99Ms": 14.131199,
+      "errors": 0
+    },
+    {
+      "connections": 200,
+      "connectionsObserved": 202,
+      "p50Ms": 2,
+      "p95Ms": 4,
+      "p99Ms": 7,
+      "shotsPerSecond": 99.65714285714286,
+      "wsMessagesPerSecond": 899.0642989575642,
+      "outMessagesPerSecond": 759.9593587482972,
+      "outBytesPerSecond": 183557.83152921678,
+      "cpuCoresTotal": 0.17935666426478078,
+      "eventLoopP99Ms": 13.918207,
+      "errors": 0
+    },
+    {
+      "connections": 400,
+      "connectionsObserved": 402,
+      "p50Ms": 2,
+      "p95Ms": 3,
+      "p99Ms": 8,
+      "shotsPerSecond": 199.0857142857143,
+      "wsMessagesPerSecond": 2769.691596873821,
+      "outMessagesPerSecond": 2492.172848889872,
+      "outBytesPerSecond": 590649.7524235948,
+      "cpuCoresTotal": 0.2576182951908512,
+      "eventLoopP99Ms": 14.180351,
+      "errors": 0
+    },
+    {
+      "connections": 600,
+      "connectionsObserved": 602,
+      "p50Ms": 1,
+      "p95Ms": 3,
+      "p99Ms": 17,
+      "shotsPerSecond": 298.2,
+      "wsMessagesPerSecond": 6669.611709487496,
+      "outMessagesPerSecond": 6247.794561853569,
+      "outBytesPerSecond": 1438292.6010387246,
+      "cpuCoresTotal": 0.3314360060688627,
+      "eventLoopP99Ms": 22.839295,
+      "errors": 0
+    },
+    {
+      "connections": 800,
+      "connectionsObserved": 802,
+      "p50Ms": 1,
+      "p95Ms": 4,
+      "p99Ms": 24,
+      "shotsPerSecond": 398.25714285714287,
+      "wsMessagesPerSecond": 9064.049091492334,
+      "outMessagesPerSecond": 8502.600432169056,
+      "outBytesPerSecond": 1950220.8627155945,
+      "cpuCoresTotal": 0.4089585207256002,
+      "eventLoopP99Ms": 30.507006999999998,
+      "errors": 0
+    },
+    {
+      "connections": 1000,
+      "connectionsObserved": 1002,
+      "p50Ms": 1,
+      "p95Ms": 54,
+      "p99Ms": 132.94999999999985,
+      "shotsPerSecond": 491.6,
+      "wsMessagesPerSecond": 16590.80307706648,
+      "outMessagesPerSecond": 15916.41806531362,
+      "outBytesPerSecond": 3637998.2256558263,
+      "cpuCoresTotal": 0.7372285373467103,
+      "eventLoopP99Ms": 62.226431,
+      "errors": 0
+    }
+  ]
+}
